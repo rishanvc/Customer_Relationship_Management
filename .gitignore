@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Django
+*.log
+staticfiles/
+media/
+
+# Environment variables
+.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+
+# React build
+frontend/build/
+
+# Python build
+dist/
+build/
+*.egg-info/
+
+# Migrations cache
+**/migrations/__pycache__/
