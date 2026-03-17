@@ -4,10 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Customer
 from .serializers import CustomerSerializer
+from accounts.permissions import IsAdminUserRole,IsStaffUserRole
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 
 class CustomerCreateView(APIView):
+    permission_classes=[IsAdminUserRole]
+
     def post(self,request):
         serializer=CustomerSerializer(data=request.data)
 
@@ -18,6 +22,8 @@ class CustomerCreateView(APIView):
     
 
 class CustomerListView(APIView):
+    permission_classes=[IsAuthenticated]
+
     def get(self,request):
         user=request.user
         if user.role=='admin':
@@ -30,6 +36,7 @@ class CustomerListView(APIView):
     
 
 class CustomerUpdateView(APIView):
+    permission_classes=[IsAuthenticated]
 
     def patch(self, request, pk):
         try:
@@ -70,14 +77,9 @@ class CustomerUpdateView(APIView):
 
     
 class CustomerDeleteView(APIView):
+    permission_classes=[IsAdminUserRole]
+
     def delete(self, request, pk):
-
-        if request.user.role != "admin":
-            return Response(
-                {"error": "Only admin can delete customers"},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
         try:
             customer = Customer.objects.get(id=pk)
         except Customer.DoesNotExist:

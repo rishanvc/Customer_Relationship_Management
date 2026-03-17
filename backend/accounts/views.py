@@ -6,6 +6,7 @@ from .serializers import StaffRegisterSerializer,StaffListSerializer,StaffUpdate
 from django.contrib.auth import authenticate
 from .models import User
 from rest_framework.authtoken.models import Token
+from .permissions import IsAdminUserRole
 # Create your views here.
 
 
@@ -57,6 +58,8 @@ class LoginView(APIView):
 
 
 class StaffListView(APIView):
+    permission_classes=[IsAdminUserRole]
+
     def get(self,request):
         staff_users=User.objects.filter(role='staff')
         serializer=StaffListSerializer(staff_users,many=True)
@@ -64,6 +67,8 @@ class StaffListView(APIView):
     
 
 class ApproveStaffView(APIView):
+    permission_classes=[IsAdminUserRole]
+
     def patch(self,request,pk):
         try:
             user_staff=User.objects.get(id=pk,role='staff')
@@ -75,6 +80,8 @@ class ApproveStaffView(APIView):
         return Response({"message":"the staff approved successfully"})
 
 class DeleteStaffView(APIView):
+    permission_classes=[IsAdminUserRole]
+
     def delete(self,request,pk):
         try:
             user_staff=User.objects.get(id=pk,role='staff')
@@ -88,6 +95,8 @@ class DeleteStaffView(APIView):
 
 
 class UpdateStaffView(APIView):
+    permission_classes=[IsAdminUserRole]
+    
     def patch(self,request,pk):
         try:
             staff_user=User.objects.get(id=pk,role='staff')

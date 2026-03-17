@@ -4,9 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import InteractionNoteSerializer
 from .models import InteractionNote
+from rest_framework.permissions import IsAuthenticated
+from accounts.permissions import IsStaffUserRole
 # Create your views here.
 
 class InteractionNoteCreateView(APIView):
+    permission_classes=[IsStaffUserRole]
+
     def post(self,request):
         serializer=InteractionNoteSerializer(data=request.data)
 
@@ -19,6 +23,7 @@ class InteractionNoteCreateView(APIView):
 
 
 class InteractionNoteListView(APIView):
+    permission_classes=[IsAuthenticated]
 
     def get(self, request):
         user = request.user
