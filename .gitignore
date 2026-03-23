@@ -17,15 +17,24 @@ media/
 
 # Environment variables
 .env
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
 
 # VSCode
 .vscode/
 
 # macOS
 .DS_Store
+Thumbs.db
 
 # Node
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # React build
 frontend/build/
@@ -34,6 +43,11 @@ frontend/build/
 dist/
 build/
 *.egg-info/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
 
 # Migrations cache
 **/migrations/__pycache__/

@@ -15,7 +15,7 @@ class InteractionNoteCreateView(APIView):
         serializer=InteractionNoteSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(staff=request.user)
             return Response({"message":"The note added successfully"},status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 

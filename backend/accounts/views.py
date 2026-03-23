@@ -50,7 +50,7 @@ class LoginView(APIView):
                 "message": "Login successful",
                 "token":token.key,
                 "role": user.role,
-                "username": user.username
+                "username": user.username,
             }
         )
     
