@@ -25,15 +25,15 @@ function DashboardLayout({ children }   ) {
 
   return (
     <div className="flex">
-      
-      <Sidebar />
-      <div className="flex-1">
-        <Navbar />
-        <div className="p-6 ">
+  <Sidebar />
+
+  <div className="ml-72 flex-1 p-6">
+    <Navbar />
+    <div className="p-6">
           {children}
         </div>
-      </div>
-    </div>
+  </div>
+</div>
   );
 }
 

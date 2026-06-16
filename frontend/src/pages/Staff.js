@@ -13,90 +13,114 @@ function Staff() {
     loadStaff();
   }, []);
 
-
-
-
-
   const handleApprove = async (id) => {
-
     await fetchWithAuth(`/staff/${id}/approve/`, {
-        method: "PATCH",
+      method: "PATCH",
     });
 
-    // Refresh staff list
     const updatedStaff = await fetchWithAuth("/staff/");
     setStaffList(updatedStaff);
+  };
 
-    };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this staff member?"
+    );
 
+    if (!confirmDelete) return;
 
+    await fetchWithAuth(`/staff/${id}/delete/`, {
+      method: "DELETE",
+    });
 
-
-
-    const handleDelete = async (id) => {
-
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this staff member?"
-        );
-
-        if (!confirmDelete) return;
-
-        await fetchWithAuth(`/staff/${id}/delete/`, {
-            method: "DELETE",
-        });
-
-        // Refresh list
-        const updatedStaff = await fetchWithAuth("/staff/");
-        setStaffList(updatedStaff);
-
-        };
-
-
-
+    const updatedStaff = await fetchWithAuth("/staff/");
+    setStaffList(updatedStaff);
+  };
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold mb-4">Staff Management</h1>
+    <div className="p-6 bg-gray-50 min-h-screen">
 
-      <table className="w-full border">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 border">Username</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Approved</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
+      {/* Header */}
+      <div className="bg-white rounded-2xl shadow p-6 mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Staff Management
+        </h1>
+        <p className="text-gray-500 mt-1">
+          Manage staff approvals and access permissions
+        </p>
+      </div>
 
-        <tbody>
-          {staffList.map((staff) => (
-            <tr key={staff.id} className="text-center">
-              <td className="p-2 border">{staff.username}</td>
-              <td className="p-2 border">{staff.email}</td>
-              <td className="p-2 border">
-                {staff.is_active ? "Yes" : "No"}
-              </td>
-              <td className="p-2 border">
-                {!staff.is_active && (
-                  <button
-                    onClick={()=>handleApprove(staff.id)}
-                    className="bg-green-500 text-white px-2 py-1 rounded mr-2"
-                  >
-                    Approve
-                  </button>
-                )}
+      {/* Staff Table */}
+      <div className="bg-white rounded-2xl shadow overflow-hidden">
 
-                <button
-                  onClick={()=>handleDelete(staff.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
+        <div className="overflow-x-auto">
+
+          <table className="w-full">
+
+            <thead className="bg-slate-800 text-white">
+              <tr>
+                <th className="p-4 text-left">Username</th>
+                <th className="p-4 text-left">Email</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-center">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {staffList.map((staff) => (
+                <tr
+                  key={staff.id}
+                  className="border-b hover:bg-gray-50 transition"
                 >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="p-4 font-medium text-gray-800">
+                    {staff.username}
+                  </td>
+
+                  <td className="p-4 text-gray-600">
+                    {staff.email}
+                  </td>
+
+                  <td className="p-4">
+                    {staff.is_active ? (
+                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                        Approved
+                      </span>
+                    ) : (
+                      <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium">
+                        Pending
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="p-4 text-center">
+
+                    {!staff.is_active && (
+                      <button
+                        onClick={() => handleApprove(staff.id)}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2 transition"
+                      >
+                        Approve
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => handleDelete(staff.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

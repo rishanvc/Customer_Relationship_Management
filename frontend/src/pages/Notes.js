@@ -9,74 +9,80 @@ function Notes() {
   const [assignedCustomers, setAssignedCustomers] = useState([]);
 
   useEffect(() => {
-  const loadNotes = async () => {
-    const data = await fetchWithAuth("/notes/list/");
-    setNotes(data);
-  };
+    const loadNotes = async () => {
+      const data = await fetchWithAuth("/notes/list/");
+      setNotes(data);
+    };
 
-  const loadCustomers = async () => {
-    const customers = await fetchWithAuth("/customers/list/");
-    setAssignedCustomers(customers);
-  };
+    const loadCustomers = async () => {
+      const customers = await fetchWithAuth("/customers/list/");
+      setAssignedCustomers(customers);
+    };
 
-  loadNotes();
-  loadCustomers();
+    loadNotes();
+    loadCustomers();
   }, []);
 
-
-
-
-
   const handleAddNote = async () => {
-
     if (!customerId || !noteText) {
-    alert("Please select customer and write note");
-    return;
-  }
+      alert("Please select customer and write note");
+      return;
+    }
 
+    await fetchWithAuth("/notes/", {
+      method: "POST",
+      body: JSON.stringify({
+        customer: customerId,
+        note: noteText,
+      }),
+    });
 
-   await fetchWithAuth("/notes/", {
-    method: "POST",
-    body: JSON.stringify({
-      customer: customerId,
-      note: noteText,
-    }),
-  });
+    const updatedNotes = await fetchWithAuth("/notes/list/");
+    setNotes(updatedNotes);
 
-  const updatedNotes = await fetchWithAuth("/notes/list/");
-  setNotes(updatedNotes);
-
-  setNoteText("");
-  setCustomerId("");
-  setShowForm(false);
-};
-
-
-
+    setNoteText("");
+    setCustomerId("");
+    setShowForm(false);
+  };
 
   return (
-    <div>
-      <div className="flex justify-between mb-4">
-        <h1 className="text-xl font-semibold">Interaction Notes</h1>
+    <div className="p-6 bg-gray-50 min-h-screen">
 
-        {localStorage.getItem("role") === "staff" && (
-            <button
-            onClick={() => setShowForm(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-            + Add Note
-            </button>
-        )}
+      {/* Header */}
+      <div className="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Interaction Notes
+          </h1>
+          <p className="text-gray-500">
+            Manage customer communication history
+          </p>
         </div>
 
+        {localStorage.getItem("role") === "staff" && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="mt-4 md:mt-0 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-xl shadow hover:scale-105 transition"
+          >
+            + Add Note
+          </button>
+        )}
+      </div>
 
+      {/* Add Note Form */}
+      {showForm && (
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
 
-        {showForm && (
-        <div className="mb-4 bg-gray-100 p-4 rounded">
+          <h2 className="text-xl font-semibold mb-4">
+            Create New Note
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
+
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
-              className="border p-2 mr-2"
+              className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Customer</option>
 
@@ -88,59 +94,88 @@ function Notes() {
             </select>
 
             <input
-            type="text"
-            placeholder="Write note..."
-            value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
-            className="border p-2 mr-2"
+              type="text"
+              placeholder="Write interaction note..."
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
             />
+          </div>
 
+          <div className="mt-4">
             <button
-            onClick={handleAddNote}
-            className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+              onClick={handleAddNote}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl mr-3"
             >
-            Save
+              Save Note
             </button>
 
             <button
-            onClick={() => setShowForm(false)}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
+              onClick={() => setShowForm(false)}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-xl"
             >
-            Cancel
+              Cancel
             </button>
+          </div>
+
         </div>
-        )}
+      )}
 
+      {/* Notes Table */}
+      <div className="bg-white rounded-2xl shadow overflow-hidden">
 
+        <div className="overflow-x-auto">
 
+          <table className="w-full">
 
-      <table className="w-full border">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 border">Customer</th>
-            {localStorage.getItem("role")==="admin" && (
-            <th className="p-2 border">Staff</th>
-            )}
-            <th className="p-2 border">Note</th>
-            <th className="p-2 border">Created At</th>
-          </tr>
-        </thead>
+            <thead className="bg-slate-800 text-white">
+              <tr>
+                <th className="p-4 text-left">Customer</th>
 
-        <tbody>
-          {notes.map((note) => (
-            <tr key={note.id}>
-              <td className="p-2 border">{note.customer_name}</td>
-              {localStorage.getItem("role")==="admin" && (
-              <td className="p-2 border">{note.staff_name}</td>
-              )}
-              <td className="p-2 border">{note.note}</td>
-              <td className="p-2 border">
-                {new Date(note.created_at).toLocaleString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                {localStorage.getItem("role") === "admin" && (
+                  <th className="p-4 text-left">Staff</th>
+                )}
+
+                <th className="p-4 text-left">Note</th>
+                <th className="p-4 text-left">Created At</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {notes.map((note) => (
+                <tr
+                  key={note.id}
+                  className="border-b hover:bg-gray-50 transition"
+                >
+                  <td className="p-4 font-medium text-gray-800">
+                    {note.customer_name}
+                  </td>
+
+                  {localStorage.getItem("role") === "admin" && (
+                    <td className="p-4">
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                        {note.staff_name}
+                      </span>
+                    </td>
+                  )}
+
+                  <td className="p-4 text-gray-700">
+                    {note.note}
+                  </td>
+
+                  <td className="p-4 text-gray-500 text-sm">
+                    {new Date(note.created_at).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

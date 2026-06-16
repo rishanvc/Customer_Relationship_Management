@@ -165,189 +165,248 @@ function Customers() {
 
 
   return (
-    <div>
-        <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-semibold ">Customers</h1>
+  <div className="p-6">
 
-        {localStorage.getItem("role")==="admin" && (
-        <button
-            onClick={() => setShowForm(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-            + Add Customer
-        </button>
-        )}
-        </div>
-
-
-
-        {showForm && (
-        <div className="mb-6 p-4 border rounded bg-gray-100">
-            <h2 className="text-lg mb-4">
-            {editingCustomerId ? "Edit Customer" : "Add Customer"}
-            </h2>
-
-        <input
-        type="text"
-        placeholder="Name"
-        className="border p-2 mr-2"
-        value={formData.name}
-        onChange={(e) =>
-            setFormData({ ...formData, name: e.target.value })
-        }
-        />
-
-        <input
-        type="email"
-        placeholder="Email"
-        className="border p-2 mr-2"
-        value={formData.email}
-        onChange={(e) =>
-            setFormData({ ...formData, email: e.target.value })
-        }
-        />
-
-        <input
-        type="text"
-        placeholder="Phone"
-        className="border p-2 mr-2"
-        value={formData.phone}
-        onChange={(e) =>
-            setFormData({ ...formData, phone: e.target.value })
-        }
-        />
-
-        <button
-        onClick={handleSaveCustomer}
-        className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-        >
-        Save
-        </button>
-
-        <button
-        onClick={() => {
-                        setShowForm(false);
-                        setEditingCustomerId(null);
-                        }}
-        className="bg-gray-500 text-white px-4 py-2 rounded"
-        >
-        Cancel
-        </button>
-    </div>
-    )}
-
-
-
-
-      <table className="w-full border">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Phone</th>
-            <th className="p-2 border">Lead Status</th>
-            {localStorage.getItem("role") === "admin" && (
-                <th className="p-2 border">Assigned Staff</th>
-            )}
-            {localStorage.getItem("role") === "admin" && (
-            <th className="p-2 border">Actions</th>
-            )}
-          </tr>
-        </thead>
-
-        <tbody>
-          {currentCustomers.map((c) => (
-            <tr key={c.id} className="text-center">
-              <td className="p-2 border">{c.name}</td>
-              <td className="p-2 border">{c.email}</td>
-              <td className="p-2 border">{c.phone}</td>
-              <td className="p-2 border">
-                <select
-                    value={c.lead_status}
-                    onChange={(e) => handleStatusChange(c.id, e.target.value)}
-                    className="border p-1 rounded"
-                >
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="follow_up">Follow Up</option>
-                    <option value="converted">Converted</option>
-                    <option value="lost">Lost</option>
-                </select>
-                </td>
-
-                {localStorage.getItem("role")==="admin" && (
-                <td className="p-2 border">
-                <select
-                    value={c.assigned_user || ""}
-                    onChange={(e) =>
-                    handleAssignStaff(c.id, e.target.value)
-                    }
-                    className="border p-1 rounded"
-                >
-                    <option value="">Unassigned</option>
-
-                    {staffList.map((staff) => (
-                    <option key={staff.id} value={staff.id}>
-                        {staff.username}
-                    </option>
-                    ))}
-                </select>
-                </td>
-                )}
-
-              
-              {localStorage.getItem("role") === "admin" && (
-
-              <td className="p-2 border">
-                <button 
-                    onClick={() => handleEditClick(c)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
-                  Edit
-                </button>
-                <button 
-                    onClick={()=>handleDelete(c.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded">
-                    Delete
-                </button>
-              </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-
-
-<div className="flex justify-center mt-4 space-x-2">
-
-        <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-
-        <span className="px-3 py-1">
-          Page {currentPage}
-        </span>
-
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={
-            indexOfLastCustomer >= customers.length
-          }
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-
+    {/* Header */}
+    <div className="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800">
+          Customers
+        </h1>
+        <p className="text-gray-500">
+          Manage your customer database
+        </p>
       </div>
 
+      {localStorage.getItem("role") === "admin" && (
+        <button
+          onClick={() => setShowForm(true)}
+          className="mt-4 md:mt-0 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-xl shadow hover:scale-105 transition"
+        >
+          + Add Customer
+        </button>
+      )}
+    </div>
 
+    {/* Form */}
+    {showForm && (
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">
+          {editingCustomerId
+            ? "Edit Customer"
+            : "Add Customer"}
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-4">
+
+          <input
+            type="text"
+            placeholder="Name"
+            className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                name: e.target.value,
+              })
+            }
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                email: e.target.value,
+              })
+            }
+          />
+
+          <input
+            type="text"
+            placeholder="Phone"
+            className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                phone: e.target.value,
+              })
+            }
+          />
+        </div>
+
+        <div className="mt-4">
+          <button
+            onClick={handleSaveCustomer}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl mr-3"
+          >
+            Save
+          </button>
+
+          <button
+            onClick={() => {
+              setShowForm(false);
+              setEditingCustomerId(null);
+            }}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-xl"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* Table */}
+    <div className="bg-white rounded-2xl shadow overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+
+          <thead className="bg-slate-800 text-white">
+            <tr>
+              <th className="p-4">Name</th>
+              <th className="p-4">Email</th>
+              <th className="p-4">Phone</th>
+              <th className="p-4">Lead Status</th>
+
+              {localStorage.getItem("role") === "admin" && (
+                <th className="p-4">Assigned Staff</th>
+              )}
+
+              {localStorage.getItem("role") === "admin" && (
+                <th className="p-4">Actions</th>
+              )}
+            </tr>
+          </thead>
+
+          <tbody>
+            {currentCustomers.map((c) => (
+              <tr
+                key={c.id}
+                className="text-center border-b hover:bg-gray-50 transition"
+              >
+                <td className="p-4">{c.name}</td>
+                <td className="p-4">{c.email}</td>
+                <td className="p-4">{c.phone}</td>
+
+                <td className="p-4">
+                  <select
+                    value={c.lead_status}
+                    onChange={(e) =>
+                      handleStatusChange(
+                        c.id,
+                        e.target.value
+                      )
+                    }
+                    className="border rounded-lg p-2"
+                  >
+                    <option value="new">New</option>
+                    <option value="contacted">
+                      Contacted
+                    </option>
+                    <option value="follow_up">
+                      Follow Up
+                    </option>
+                    <option value="converted">
+                      Converted
+                    </option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </td>
+
+                {localStorage.getItem("role") === "admin" && (
+                  <td className="p-4">
+                    <select
+                      value={c.assigned_user || ""}
+                      onChange={(e) =>
+                        handleAssignStaff(
+                          c.id,
+                          e.target.value
+                        )
+                      }
+                      className="border rounded-lg p-2"
+                    >
+                      <option value="">
+                        Unassigned
+                      </option>
+
+                      {staffList.map((staff) => (
+                        <option
+                          key={staff.id}
+                          value={staff.id}
+                        >
+                          {staff.username}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                )}
+
+                {localStorage.getItem("role") === "admin" && (
+                  <td className="p-4">
+                    <button
+                      onClick={() =>
+                        handleEditClick(c)
+                      }
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg mr-2"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleDelete(c.id)
+                      }
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    {/* Pagination */}
+    <div className="flex justify-center items-center mt-6 gap-3">
+
+      <button
+        onClick={() =>
+          setCurrentPage(currentPage - 1)
+        }
+        disabled={currentPage === 1}
+        className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 disabled:opacity-40"
+      >
+        Previous
+      </button>
+
+      <span className="font-semibold">
+        Page {currentPage}
+      </span>
+
+      <button
+        onClick={() =>
+          setCurrentPage(currentPage + 1)
+        }
+        disabled={
+          indexOfLastCustomer >= customers.length
+        }
+        className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 disabled:opacity-40"
+      >
+        Next
+      </button>
 
     </div>
-  );
+
+  </div>
+);
 }
 
 export default Customers;
