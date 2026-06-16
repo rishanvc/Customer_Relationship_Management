@@ -12,16 +12,16 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
 function DashboardLayout({ children }   ) {
-  const [customers, setCustomers] = useState([]);
+  // const [customers, setCustomers] = useState([]);
 
-  useEffect(() => {
-    const loadCustomers = async () => {
-      const data = await fetchWithAuth("/customers/list/");
-      setCustomers(data);
-    };
+  // useEffect(() => {
+  //   const loadCustomers = async () => {
+  //     const data = await fetchWithAuth("/customers/list/");
+  //     setCustomers(data);
+  //   };
 
-    loadCustomers();
-  }, []);
+  //   loadCustomers();
+  // }, []);
 
   return (
     <div className="flex">

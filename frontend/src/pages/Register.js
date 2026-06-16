@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 function Register() {
-
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -33,72 +32,84 @@ function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <div className="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl">
 
-      <div className="bg-white p-8 rounded shadow w-80">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Staff Registration
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Create your account and wait for approval
+          </p>
+        </div>
 
-        <h2 className="text-2xl mb-6 text-center">
-          Staff Registration
-        </h2>
+        <div className="relative mb-4">
+          <FaUser className="absolute left-4 top-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                username: e.target.value,
+              })
+            }
+          />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full p-2 mb-4 border rounded"
-          value={formData.username}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              username: e.target.value,
-            })
-          }
-        />
+        <div className="relative mb-4">
+          <FaEnvelope className="absolute left-4 top-4 text-gray-400" />
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                email: e.target.value,
+              })
+            }
+          />
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 mb-4 border rounded"
-          value={formData.email}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              email: e.target.value,
-            })
-          }
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 mb-4 border rounded"
-          value={formData.password}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              password: e.target.value,
-            })
-          }
-        />
+        <div className="relative mb-6">
+          <FaLock className="absolute left-4 top-4 text-gray-400" />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                password: e.target.value,
+              })
+            }
+          />
+        </div>
 
         <button
           onClick={handleRegister}
-          className="w-full bg-green-500 text-white p-2 rounded"
+          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition duration-300"
         >
           Register
         </button>
 
-        <p className="text-center mt-4">
-    
-            <Link
-              to="/"
-              className="text-blue-500 ml-1"
-            >
-              Back to login
-            </Link>
-          </p>
+        <p className="text-center text-gray-600 mt-6">
+          Already have an account?
+          <Link
+            to="/"
+            className="ml-1 text-indigo-600 font-semibold hover:text-indigo-800"
+          >
+            Login
+          </Link>
+        </p>
 
       </div>
-
     </div>
   );
 }

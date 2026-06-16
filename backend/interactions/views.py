@@ -6,6 +6,7 @@ from .serializers import InteractionNoteSerializer
 from .models import InteractionNote
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import IsStaffUserRole
+from datetime import date
 # Create your views here.
 
 class InteractionNoteCreateView(APIView):
@@ -22,15 +23,18 @@ class InteractionNoteCreateView(APIView):
 
 
 
+
 class InteractionNoteListView(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self, request):
         user = request.user
 
+        # today=date.today()
         # Admin → see all notes
         if user.role == "admin":
-            notes = InteractionNote.objects.all()
+            # notes = InteractionNote.objects.filter(created_at__date=today)
+            notes=InteractionNote.objects.all()
 
         # Staff → see only their notes
         else:
