@@ -36,8 +36,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-      <div className="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <div className="bg-white w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl">
         
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
