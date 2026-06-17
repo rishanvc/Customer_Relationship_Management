@@ -3,8 +3,6 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import { Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { fetchWithAuth } from "./services/api";
 import Customers from './pages/Customers';
 import Notes from './pages/Notes';
 import Staff from './pages/Staff';
