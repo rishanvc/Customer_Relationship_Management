@@ -11,7 +11,7 @@ function Register() {
 
   const handleRegister = async () => {
     const response = await fetch(
-      "http://127.0.0.1:8000/api/register/",
+      "https://backend-ly1n.onrender.com/api/register/",
       {
         method: "POST",
         headers: {
