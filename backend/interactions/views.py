@@ -7,6 +7,9 @@ from .models import InteractionNote
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import IsStaffUserRole
 from datetime import date
+
+import os
+import google.generativeai as genai
 # Create your views here.
 
 class InteractionNoteCreateView(APIView):
@@ -42,3 +45,35 @@ class InteractionNoteListView(APIView):
 
         serializer = InteractionNoteSerializer(notes, many=True)
         return Response(serializer.data)
+    
+
+
+
+
+class SummarizeNoteView(APIView):
+
+    def post(self, request):
+        note_text = request.data.get("note", "")
+
+        if not note_text:
+            return Response(
+                {"error": "Note text is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+        model = genai.GenerativeModel("models/gemini-2.5-flash")
+
+        prompt = f"""
+        Summarize this customer note in one short sentence (maximum 10 words).
+
+        Note:
+        {note_text}
+        """
+
+        result = model.generate_content(prompt)
+
+        return Response({
+            "summary": result.text
+        })

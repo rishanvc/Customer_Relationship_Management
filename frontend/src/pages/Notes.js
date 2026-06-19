@@ -7,6 +7,7 @@ function Notes() {
   const [noteText, setNoteText] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [assignedCustomers, setAssignedCustomers] = useState([]);
+  const [summary, setSummary] = useState("");
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -22,6 +23,19 @@ function Notes() {
     loadNotes();
     loadCustomers();
   }, []);
+
+  const handleGenerateSummary = async () => {
+    const data = await fetchWithAuth("/notes/summarize/", {
+      method: "POST",
+      body: JSON.stringify({
+        note: noteText,
+      }),
+    });
+
+    console.log("AI Response:", data);
+
+    setSummary(data.summary);
+  };
 
   const handleAddNote = async () => {
     if (!customerId || !noteText) {
@@ -47,16 +61,13 @@ function Notes() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
       {/* Header */}
       <div className="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">
             Interaction Notes
           </h1>
-          <p className="text-gray-500">
-            Manage customer communication history
-          </p>
+          <p className="text-gray-500">Manage customer communication history</p>
         </div>
 
         {localStorage.getItem("role") === "staff" && (
@@ -72,13 +83,9 @@ function Notes() {
       {/* Add Note Form */}
       {showForm && (
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-
-          <h2 className="text-xl font-semibold mb-4">
-            Create New Note
-          </h2>
+          <h2 className="text-xl font-semibold mb-4">Create New Note</h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-
             <select
               value={customerId}
               onChange={(e) => setCustomerId(e.target.value)}
@@ -100,6 +107,20 @@ function Notes() {
               onChange={(e) => setNoteText(e.target.value)}
               className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
             />
+
+            <button
+              onClick={handleGenerateSummary}
+              className="bg-purple-500 text-white px-4 py-2 rounded-xl mr-2"
+            >
+              Generate AI Summary
+            </button>
+            {summary && (
+              <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
+                <h3 className="font-semibold text-purple-700">AI Summary</h3>
+
+                <p className="mt-2 text-gray-700">{summary}</p>
+              </div>
+            )}
           </div>
 
           <div className="mt-4">
@@ -117,17 +138,13 @@ function Notes() {
               Cancel
             </button>
           </div>
-
         </div>
       )}
 
       {/* Notes Table */}
       <div className="bg-white rounded-2xl shadow overflow-hidden">
-
         <div className="overflow-x-auto">
-
           <table className="w-full">
-
             <thead className="bg-slate-800 text-white">
               <tr>
                 <th className="p-4 text-left">Customer</th>
@@ -136,7 +153,7 @@ function Notes() {
                   <th className="p-4 text-left">Staff</th>
                 )}
 
-                <th className="p-4 text-left">Note</th>
+                <th className="p-4 text-center">Note</th>
                 <th className="p-4 text-left">Created At</th>
               </tr>
             </thead>
@@ -159,9 +176,7 @@ function Notes() {
                     </td>
                   )}
 
-                  <td className="p-4 text-gray-700">
-                    {note.note}
-                  </td>
+                  <td className="p-4 text-gray-700">{note.note}</td>
 
                   <td className="p-4 text-gray-500 text-sm">
                     {new Date(note.created_at).toLocaleString()}
@@ -169,13 +184,9 @@ function Notes() {
                 </tr>
               ))}
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </div>
   );
 }
