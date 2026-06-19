@@ -121,7 +121,7 @@ function Notes() {
                   : "bg-gradient-to-r from-purple-500 to-fuchsia-500"
               }`}
             >
-              ✨ Generate AI Summary
+              {loadingSummary ? "Generating..." : "✨ Generate AI Summary"}
             </button>
             {summary && (
               <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
