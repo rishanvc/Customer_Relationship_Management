@@ -112,7 +112,6 @@ function Notes() {
               onChange={(e) => setNoteText(e.target.value)}
               className="border border-gray-300 p-3 rounded-xl focus:ring-2 focus:ring-blue-500"
             />
-
             <button
               onClick={handleGenerateSummary}
               disabled={!noteText.trim()}
@@ -124,7 +123,6 @@ function Notes() {
             >
               ✨ Generate AI Summary
             </button>
-
             {summary && (
               <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
                 <h3 className="font-semibold text-purple-700">✨ AI Summary</h3>
