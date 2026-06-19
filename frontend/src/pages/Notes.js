@@ -8,6 +8,7 @@ function Notes() {
   const [customerId, setCustomerId] = useState("");
   const [assignedCustomers, setAssignedCustomers] = useState([]);
   const [summary, setSummary] = useState("");
+  const [loadingSummary, setLoadingSummary] = useState(false);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -25,16 +26,20 @@ function Notes() {
   }, []);
 
   const handleGenerateSummary = async () => {
-    const data = await fetchWithAuth("/notes/summarize/", {
-      method: "POST",
-      body: JSON.stringify({
-        note: noteText,
-      }),
-    });
+    try {
+      setLoadingSummary(true);
 
-    console.log("AI Response:", data);
+      const data = await fetchWithAuth("/notes/summarize/", {
+        method: "POST",
+        body: JSON.stringify({
+          note: noteText,
+        }),
+      });
 
-    setSummary(data.summary);
+      setSummary(data.summary);
+    } finally {
+      setLoadingSummary(false);
+    }
   };
 
   const handleAddNote = async () => {
@@ -110,13 +115,19 @@ function Notes() {
 
             <button
               onClick={handleGenerateSummary}
-              className="bg-purple-500 text-white px-4 py-2 rounded-xl mr-2"
+              disabled={!noteText.trim()}
+              className={`w-full py-3 rounded-xl text-white ${
+                !noteText.trim()
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-purple-500 to-fuchsia-500"
+              }`}
             >
-              Generate AI Summary
+              ✨ Generate AI Summary
             </button>
+
             {summary && (
               <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
-                <h3 className="font-semibold text-purple-700">AI Summary</h3>
+                <h3 className="font-semibold text-purple-700">✨ AI Summary</h3>
 
                 <p className="mt-2 text-gray-700">{summary}</p>
               </div>
